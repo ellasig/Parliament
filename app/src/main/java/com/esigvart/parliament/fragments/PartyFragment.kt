@@ -17,7 +17,8 @@ import com.esigvart.parliament.databinding.FragmentPartyBinding
 import com.esigvart.parliament.repositories.Repository
 
 //6.3.2023, Ella Sigvart, 2201316
-
+// This code dispalys a list on parties and allows the user to navigate to list of members for each party.
+//
 
 class PartyFragment : Fragment() {
 
@@ -33,11 +34,15 @@ class PartyFragment : Fragment() {
 
         adapter = PartyAdapter(emptyList())
 
-        binding = FragmentPartyBinding.inflate(inflater, container, false)
+        //inflates the layout using data binding
+        binding = FragmentPartyBinding.inflate(inflater)
+
         binding.recyclerViewParty.adapter = adapter
+
+        //sets the layout manager for the recyclerview
         binding.recyclerViewParty.layoutManager = LinearLayoutManager(context)
 
-
+        //listens for changes in list of parties and updates the recyclerview adapter with new data
         viewModel.parties.observe(viewLifecycleOwner) { parties ->
             adapter.parties = parties
             adapter.notifyDataSetChanged()
@@ -49,22 +54,24 @@ class PartyFragment : Fragment() {
 }
 
 
-//tästä alaspäin
 class PartyAdapter(var parties: List<String>) : RecyclerView.Adapter<PartyAdapter.PartyViewHolder>() {
 
+    // This function inflates the layout for single item in recyclerview and return viewholder object
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PartyViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.partyitemlist, parent, false)
         return PartyViewHolder(view)
     }
-
+    // This function returns the number of items from the parties list.
     override fun getItemCount(): Int {
         return parties.size
     }
 
+    // This method is responsible for binding the data from list to the views in recyclerview.
     override fun onBindViewHolder(holder: PartyViewHolder, position: Int) {
         holder.itemView.findViewById<TextView>(R.id.textViewParty).apply {
             text = parties[position]
             val party = text.toString()
+            //  when the textview is clicked, it navigates to next fragment and passing in the party of the member as an argument
             setOnClickListener {
                 val action = PartyFragmentDirections.actionPartyFragmentToMemberFragment(party)
                 it.findNavController().navigate(action)
@@ -72,11 +79,11 @@ class PartyAdapter(var parties: List<String>) : RecyclerView.Adapter<PartyAdapte
         }
     }
 
-
+    // this class extends recyclerview.viewholder and takes a view as a parameter
     class PartyViewHolder(view: View) : RecyclerView.ViewHolder(view)
 
 }
-
+//The data is retrieved from a repository using LiveData and transformations.
 class PartyViewModel: ViewModel() {
     var parties = Transformations.map(Repository.logData) {
         it.map { it.party }.toSortedSet().toList()

@@ -15,7 +15,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 //6.3.2023, Ella Sigvart, 2201316
-
+// This class represent the main activity.
+// Class is responsible for fetching data from the API and inserting it into the local database.
+// It also exposes the members liveData object from the Repository class.
 
 class MainActivity : AppCompatActivity() {
     private lateinit var viewModel: MainActivityViewModel
@@ -26,28 +28,31 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        //viewmodel initialized
         viewModel = ViewModelProvider(this).get(MainActivityViewModel::class.java)
+
+        //inflates the layout using data binding
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
+        //navigation control
         val navHostFragment = supportFragmentManager
             .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
-        /*
-        viewModel.members.observe(this, Observer { members ->
-            Log.d("Qwerty", "Members Updated: ${members.size}")
-        })
-    }*/
+
     }
 
 
     class MainActivityViewModel : ViewModel() {
 
+        // This provides access to data layer
         private val repository = Repository
 
+        // This holds the list of member objects retrieved from database through repository by using "logdata"
         val members: LiveData<List<Member>> = repository.logData
 
+        // This function fetches the data from API through memberapi object.
+        // After that it will insert it to database.
         suspend fun insertMembersToDatabase(context: Context) {
             withContext(Dispatchers.IO) {
                 try {

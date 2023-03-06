@@ -5,7 +5,7 @@ import android.content.Context
 import com.esigvart.parliament.database.OpsDatabase
 
 //6.3.2023, Ella Sigvart, 2201316
-
+// This class is a application class that initializes app context and database object for entire application
 
 class App : Application() {
 
@@ -16,6 +16,7 @@ class App : Application() {
             private set
     }
 
+    // This method is called when the app is launched
     override fun onCreate() {
         super.onCreate()
         appContext = applicationContext

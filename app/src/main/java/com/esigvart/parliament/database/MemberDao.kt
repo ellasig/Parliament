@@ -5,7 +5,7 @@ import androidx.room.*
 
 //6.3.2023, Ella Sigvart, 2201316
 
-
+//this code defines member data class and interfaces memberdao what is used to perform database tasks on member objects.
 @Entity
 data class Member(
     @PrimaryKey(autoGenerate = true)
@@ -17,42 +17,22 @@ data class Member(
     val minister: Boolean = false,
     val pictureUrl: String = "",
 )
-
+//sql queries will communicate with the database
 @Dao
 interface MemberDao {
     //insert data to room database
-    @Insert(onConflict = OnConflictStrategy.REPLACE) //korvaa olevan tiedon uuteen, vältetään duplicatio
+    @Insert(onConflict = OnConflictStrategy.REPLACE) //avoid duplication
     fun insert(members: List<Member>)
 
-    @Query("select * from Member") // tuo kaikki rivit takasin livedatan sisällä
-    fun getAll(): LiveData<List<Member>>// ei tarvitse olla suspend jos on livedata
+    //get all members from the database
+    @Query("select * from Member")
+    fun getAll(): LiveData<List<Member>>
 
+    //gets all members from specific party
     @Query("select * from Member where party = :party")
     fun getMembersFromParty(party: String): LiveData<List<Member>>
 
-
+    //get member info via id
     @Query("SELECT * FROM member WHERE hetekaId = :hetekaId")
     fun getMemberDetails(hetekaId: Int?): LiveData<List<Member>>
     }
-
-/*
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(membersList: List<Member>)
-
-    @Update
-    suspend fun update(member: Member)
-}
-
-   /* @Query("SELECT * FROM members_list")
-    fun getMemberInfo(): MutableList<List<Member>>*/
-
-/*
-
-
-/*
-    @Update(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun upDateMemberInfo(member: Member)
-*/
-}
-
- */

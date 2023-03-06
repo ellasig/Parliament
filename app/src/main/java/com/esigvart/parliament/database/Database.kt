@@ -8,12 +8,11 @@ import com.esigvart.parliament.App
 
 //6.3.2023, Ella Sigvart, 2201316
 
-
-//entities = yks lista jos on lisaa niin , ja uusi class sinne
+//this class is for room database for storing Member objects
 @Database(entities = [Member::class], version = 1, exportSchema = false)
 abstract class OpsDatabase : RoomDatabase()    {
     abstract val memberDao : MemberDao
-    companion object {
+    companion object { //provides getInstance
         @Volatile
         private var INSTANCE: OpsDatabase? = null
         fun getInstance(context: Context): OpsDatabase {
@@ -28,6 +27,4 @@ abstract class OpsDatabase : RoomDatabase()    {
             }
         }
     }
-
-
 }
